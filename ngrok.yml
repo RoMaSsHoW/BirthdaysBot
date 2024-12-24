@@ -1,0 +1,11 @@
+version: 2
+authtoken: 2pNy0LrI974DXHy0YFX8gKdXT5B_BotYmVBtei72MTD84pyt
+api_key: ak_2pNymSt8G9sjXmQyt58dwoeejNx
+update: true
+log: stdout
+
+tunnels:
+  nginx_proxy:
+    addr: nginx:80
+    proto: http
+    domain: gator-guiding-chimp.ngrok-free.app

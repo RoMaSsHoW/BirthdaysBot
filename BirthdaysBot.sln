@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BirthdaysBot.API", "BirthdaysBot.API\BirthdaysBot.API.csproj", "{4359E6EE-AD94-491E-8E65-E057BE78B821}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{A3809FA3-DB18-44BA-954F-78700E7BA203}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BirthdaysBot.BLL", "..\BirthdaysBot.BLL\BirthdaysBot.BLL.csproj", "{193D1F55-806D-4EDD-A420-CDF0A873C0BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BirthdaysBot.DAL", "..\BirthdaysBot.DAL\BirthdaysBot.DAL.csproj", "{6DCCE46C-E5DF-43EA-9906-8501132541DE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4359E6EE-AD94-491E-8E65-E057BE78B821}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4359E6EE-AD94-491E-8E65-E057BE78B821}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4359E6EE-AD94-491E-8E65-E057BE78B821}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4359E6EE-AD94-491E-8E65-E057BE78B821}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3809FA3-DB18-44BA-954F-78700E7BA203}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3809FA3-DB18-44BA-954F-78700E7BA203}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3809FA3-DB18-44BA-954F-78700E7BA203}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3809FA3-DB18-44BA-954F-78700E7BA203}.Release|Any CPU.Build.0 = Release|Any CPU
+		{193D1F55-806D-4EDD-A420-CDF0A873C0BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{193D1F55-806D-4EDD-A420-CDF0A873C0BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{193D1F55-806D-4EDD-A420-CDF0A873C0BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{193D1F55-806D-4EDD-A420-CDF0A873C0BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DCCE46C-E5DF-43EA-9906-8501132541DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DCCE46C-E5DF-43EA-9906-8501132541DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DCCE46C-E5DF-43EA-9906-8501132541DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DCCE46C-E5DF-43EA-9906-8501132541DE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3624A35C-AA09-4C60-941B-FF4DC3BEE523}
+	EndGlobalSection
+EndGlobal
