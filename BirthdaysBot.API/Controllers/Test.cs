@@ -1,28 +1,70 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BirthdaysBot.API.TestService;
 using Microsoft.AspNetCore.Mvc;
+using Telegram.Bot.Types;
 
 namespace BirthdaysBot.API.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("webhook")]
     public class Test : ControllerBase
     {
-        [HttpGet]
-        public async Task<ActionResult> TestData()
-        {
-            var data = await GetTestData();
+        private readonly ServiceTest _serviceTest;
 
-            return data == null ? NotFound() : Ok(data);
+        public Test(ServiceTest serviceTest)
+        {
+            _serviceTest = serviceTest;
         }
 
-        private async Task<IEnumerable<int>> GetTestData()
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] Update update)
         {
-            List<int> data = new List<int>()
-            {
-                1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-            };
-
-            return data;
+            await _serviceTest.HandleUpdate(update);
+            return Ok();
         }
     }
 }
+
+
+
+
+//private readonly ITelegramBotClient _botClient;
+
+//public Test(ITelegramBotClient botClient)
+//{
+//    _botClient = botClient;
+//}
+
+//[HttpPost]
+//public async Task<IActionResult> Post([FromBody] Update update)
+//{
+//    if (update?.Message?.Text != null)
+//    {
+//        var chatId = update.Message.Chat.Id;
+//        var userMessage = update.Message.Text;
+
+//        await _botClient.SendMessage(
+//            chatId: chatId,
+//            text: $"Вы написали: {userMessage}"
+//        );
+//    }
+//    return Ok();
+//}
+
+
+//[HttpGet]
+//public async Task<ActionResult> TestData()
+//{
+//    var data = await GetTestData();
+
+//    return data == null ? NotFound() : Ok(data);
+//}
+
+//private async Task<IEnumerable<int>> GetTestData()
+//{
+//    List<int> data = new List<int>()
+//    {
+//        1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+//    };
+
+//    return data;
+//}
