@@ -1,4 +1,4 @@
-﻿using BirthdaysBot.API.TestService;
+﻿using BirthdaysBot.BLL.Servoces;
 using Microsoft.AspNetCore.Mvc;
 using Telegram.Bot.Types;
 
@@ -8,17 +8,17 @@ namespace BirthdaysBot.API.Controllers
     [Route("webhook")]
     public class Test : ControllerBase
     {
-        private readonly ServiceTest _serviceTest;
+        private readonly IUpdateHandler _updateHandler;
 
-        public Test(ServiceTest serviceTest)
+        public Test(IUpdateHandler updateHandler)
         {
-            _serviceTest = serviceTest;
+            _updateHandler = updateHandler;
         }
 
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Update update)
         {
-            await _serviceTest.HandleUpdate(update);
+            await _updateHandler.Execute(update);
             return Ok();
         }
     }
@@ -26,6 +26,19 @@ namespace BirthdaysBot.API.Controllers
 
 
 
+//private readonly ServiceTest _serviceTest;
+
+//public Test(ServiceTest serviceTest)
+//{
+//    _serviceTest = serviceTest;
+//}
+
+//[HttpPost]
+//public async Task<IActionResult> Post([FromBody] Update update)
+//{
+//    await _serviceTest.HandleUpdate(update);
+//    return Ok();
+//}
 
 //private readonly ITelegramBotClient _botClient;
 

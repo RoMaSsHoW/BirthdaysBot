@@ -1,4 +1,5 @@
-using BirthdaysBot.API.TestService;
+using BirthdaysBot.BLL.Commands;
+using BirthdaysBot.BLL.Servoces;
 using Telegram.Bot;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,7 +11,9 @@ var webhookUrl = configuration["TelegramSettings:WebhookUrl"];
 builder.Services.AddSingleton<ITelegramBotClient>(new TelegramBotClient(botToken));
 builder.Services.ConfigureTelegramBotMvc();
 
-builder.Services.AddScoped<ServiceTest>();
+builder.Services.AddSingleton<IUpdateHandler, UpdateHandler>();
+builder.Services.AddSingleton<BaseCommand, StartCommand>();
+
 
 builder.Services.AddCors(opt =>
 {
