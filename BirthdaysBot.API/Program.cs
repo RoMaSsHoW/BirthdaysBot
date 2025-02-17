@@ -1,5 +1,5 @@
 using BirthdaysBot.BLL.Commands;
-using BirthdaysBot.BLL.Servoces;
+using BirthdaysBot.BLL.Services;
 using Telegram.Bot;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +12,9 @@ builder.Services.AddSingleton<ITelegramBotClient>(new TelegramBotClient(botToken
 builder.Services.ConfigureTelegramBotMvc();
 
 builder.Services.AddSingleton<IUpdateHandler, UpdateHandler>();
+builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<BaseCommand, StartCommand>();
+builder.Services.AddSingleton<StateMachine>();
 
 
 builder.Services.AddCors(opt =>

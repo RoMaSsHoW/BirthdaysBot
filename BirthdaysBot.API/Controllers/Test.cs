@@ -1,4 +1,4 @@
-﻿using BirthdaysBot.BLL.Servoces;
+﻿using BirthdaysBot.BLL.Services;
 using Microsoft.AspNetCore.Mvc;
 using Telegram.Bot.Types;
 
