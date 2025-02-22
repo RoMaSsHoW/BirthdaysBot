@@ -19,6 +19,7 @@ namespace BirthdaysBot.API.Controllers
         public async Task<IActionResult> Post([FromBody] Update update)
         {
             await _updateHandler.Execute(update);
+
             return Ok();
         }
     }
