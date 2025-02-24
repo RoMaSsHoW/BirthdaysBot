@@ -12,6 +12,11 @@ namespace BirthdaysBot.BLL.Services
             Username = "Сахаров Роман",
             TelegramUsername = "@Roman_S5"
         };
+        private readonly AppUser subAdmin = new AppUser
+        {
+            ChatId = 1955716984,
+            Username = "Нияз"
+        };
 
         public AppUser? GetUser(Update update)
         {
@@ -41,11 +46,14 @@ namespace BirthdaysBot.BLL.Services
                 };
             }
 
-            if (newUser != null && newUser.ChatId == admin.ChatId)
+            if (newUser != null && newUser.ChatId == admin.ChatId )
             {
                 return admin;
             }
-
+            else if (newUser != null && newUser.ChatId == subAdmin.ChatId)
+            {
+                return subAdmin;
+            }
             return null;
         }
     }

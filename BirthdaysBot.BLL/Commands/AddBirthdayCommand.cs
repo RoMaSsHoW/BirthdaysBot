@@ -13,11 +13,7 @@ namespace BirthdaysBot.BLL.Commands
         private readonly ITelegramBotClient _botClient;
         private readonly IUserService _userService;
 
-        private Dictionary<long, InputStage> _commandState = new();
-
-        private string fullName = string.Empty; // поменять
-        private DateTime birthday = DateTime.MinValue;
-        private string telegramUsername = string.Empty;
+        private readonly Dictionary<long, UserBirthdayInfo> _commandState = new();
 
         public AddBirthdayCommand(ITelegramBotClient botClient, IUserService userService)
         {
@@ -42,147 +38,88 @@ namespace BirthdaysBot.BLL.Commands
                 return;
             }
 
+            if (!_commandState.ContainsKey(chatId.Value))
+            {
+                _commandState[chatId.Value] = new UserBirthdayInfo();
+                await _botClient.SendMessage(chatId.Value, "Введите ФИ (например: Иванов Иван)");
+                return;
+            }
+
             if (update.Type == UpdateType.CallbackQuery)
             {
                 await HandleCallbackQuery(update.CallbackQuery, chatId.Value);
             }
-            
-            if (update.Type == UpdateType.Message)
+            else if (update.Type == UpdateType.Message)
             {
-                await HandleMessage(update.Message, chatId.Value);
+                await ProcessInput(chatId.Value, update.Message.Text);
             }
-
         }
 
-        private async Task HandleMessage(Message message, long chatId)
+        private async Task ProcessInput(long chatId, string messageText)
         {
-            var messageText = message.Text;
+            var state = _commandState[chatId];
 
-            InputStage currentState = _commandState.ContainsKey(chatId) ? _commandState[chatId] : InputStage.Start;
-
-            switch (currentState)
+            if (string.IsNullOrEmpty(state.FullName))
             {
-                case InputStage.Start:
-                    _commandState[chatId] = InputStage.RequestFullName;
-                    await RestartCommand(chatId);
-                    break;
-                case InputStage.RequestFullName:
-                    await _botClient.SendMessage(chatId, "Введите ФИ (например: Иванов Иван)");
-                    _commandState[chatId] = InputStage.AwaitingFullName;
-                    break;
-                case InputStage.AwaitingFullName:
-                    if (!string.IsNullOrEmpty(messageText))
-                    {
-                        if (IsValidFullName(messageText))
-                        {
-                            fullName = CapitalizeWords(messageText);
-                            _commandState[chatId] = InputStage.RequestBirthday;
-                            await RestartCommand(chatId);
-                        }
-                        else
-                        {
-                            await _botClient.SendMessage(chatId, "Вы не корректно ввели фамилию и имя");
-                            _commandState[chatId] = InputStage.RequestFullName;
-                            await RestartCommand(chatId);
-                        }
-                    }
-                    else
-                    {
-                        await _botClient.SendMessage(chatId, "Строка не должна быть пустой");
-                        _commandState[chatId] = InputStage.RequestFullName;
-                        await RestartCommand(chatId);
-                    }
-                    break;
-                case InputStage.RequestBirthday:
-                    await _botClient.SendMessage(chatId, "Введите дату рождения в формате дд.мм:");
-                    _commandState[chatId] = InputStage.AwaitingBirthday;
-                    break;
-                case InputStage.AwaitingBirthday:
-                    if (!string.IsNullOrEmpty(messageText))
-                    {
-                        if (IsValidDate(messageText, out DateTime birthdayDate))
-                        {
-                            birthday = birthdayDate;
-                            _commandState[chatId] = InputStage.RequestUsernameChoice;
-                            await RestartCommand(chatId);
-                        }
-                        else
-                        {
-                            await _botClient.SendMessage(chatId, "Вы не корректно ввели дату");
-                            _commandState[chatId] = InputStage.RequestBirthday;
-                            await RestartCommand(chatId);
-                        }
-                    }
-                    else
-                    {
-                        await _botClient.SendMessage(chatId, "Строка не должна быть пустой");
-                        _commandState[chatId] = InputStage.RequestBirthday;
-                        await RestartCommand(chatId);
-                    }
-                    break;
-                case InputStage.RequestUsernameChoice:
-                    await _botClient.SendMessage(chatId, "Хотите добавить Telegram Username этого человека?", replyMarkup: InlineButtons.AddOrSkipUsername);
-                    break;
-                case InputStage.RequestTelegramUsername:
-                    await _botClient.SendMessage(chatId, "Введите TelegramUsername (например: @Oleg)");
-                    _commandState[chatId] = InputStage.AwaitingTelegramUsername;
-                    break;
-                case InputStage.AwaitingTelegramUsername:
-                    if (!string.IsNullOrEmpty(messageText))
-                    {
-                        telegramUsername = messageText;
-                        _commandState[chatId] = InputStage.ShowSuccessMessage;
-                        await RestartCommand(chatId);
-                    }
-                    else
-                    {
-                        await _botClient.SendMessage(chatId, "Строка не должна быть пустой");
-                        _commandState[chatId] = InputStage.RequestTelegramUsername;
-                        await RestartCommand(chatId);
-                    }
-                    break;
-                case InputStage.ShowSuccessMessage:
-                    await _botClient.SendMessage(chatId, "Человек успешно добавлен!");
-                    await _botClient.SendMessage(chatId, $"Итог:\nФИ: {fullName}\nДата рождения: {birthday}\nTelegram Username: {telegramUsername}");
-                    fullName = string.Empty;
-                    birthday = DateTime.MinValue;
-                    telegramUsername = string.Empty;
-                    _commandState.Remove(chatId);
-                    break;
+                await HandleFullNameInput(chatId, messageText);
+            }
+            else if (state.Birthday == DateTime.MinValue)
+            {
+                await HandleBirthdayInput(chatId, messageText);
+            }
+            else if (string.IsNullOrEmpty(state.TelegramUsername))
+            {
+                await HandleUsernameInput(chatId, messageText);
+            }
+        }
+
+        private async Task HandleFullNameInput(long chatId, string messageText)
+        {
+            if (string.IsNullOrWhiteSpace(messageText) || !IsValidFullName(messageText))
+            {
+                await _botClient.SendMessage(chatId, "Введите корректное ФИ (например: Иванов Иван)");
+                return;
             }
 
+            _commandState[chatId].FullName = CapitalizeWords(messageText);
+            await _botClient.SendMessage(chatId, "Введите дату рождения в формате дд.мм:");
+        }
+
+        private async Task HandleBirthdayInput(long chatId, string messageText)
+        {
+            if (!IsValidDate(messageText, out DateTime birthdayDate))
+            {
+                await _botClient.SendMessage(chatId, "Введите корректную дату в формате дд.мм:");
+                return;
+            }
+
+            _commandState[chatId].Birthday = birthdayDate;
+            await _botClient.SendMessage(chatId, "Хотите добавить Telegram Username?", replyMarkup: InlineButtons.AddOrSkipUsername);
+        }
+
+        private async Task HandleUsernameInput(long chatId, string messageText)
+        {
+            _commandState[chatId].TelegramUsername = messageText ?? string.Empty;
+
+            var userInfo = _commandState[chatId];
+            await _botClient.SendMessage(chatId, $"Человек успешно добавлен!\n\n" +
+                $"ФИ: {userInfo.FullName}\n" +
+                $"Дата рождения: {userInfo.Birthday:dd.MM}\n" +
+                $"Telegram Username: {userInfo.TelegramUsername}");
+
+            _commandState.Remove(chatId);
         }
 
         private async Task HandleCallbackQuery(CallbackQuery callbackQuery, long chatId)
         {
-            var data = callbackQuery.Data;
-
-            if (data == CommandNames.CallbackSkipUsernameC)
+            if (callbackQuery.Data == CommandNames.CallbackSkipUsernameC)
             {
-                _commandState[chatId] = InputStage.ShowSuccessMessage;
-                await RestartCommand(chatId);
+                await HandleUsernameInput(chatId, null);
             }
             else
             {
-                _commandState[chatId] = InputStage.RequestTelegramUsername;
-                await RestartCommand(chatId);
+                await _botClient.SendMessage(chatId, "Введите Telegram Username (например: @Oleg)");
             }
-
-            return;
-        }
-
-        private async Task RestartCommand(long chatId)
-        {
-            await ExecuteAsync(new Update
-            {
-                Message = new Message
-                {
-                    Chat = new Chat
-                    {
-                        Id = chatId
-                    }
-                }
-            });
         }
 
         private string CapitalizeWords(string input)
@@ -194,12 +131,7 @@ namespace BirthdaysBot.BLL.Commands
 
         private bool IsValidFullName(string fullName)
         {
-            var array = fullName.Split(' ');
-            if (array.Length == 2)
-            {
-                return true;
-            }
-            return false;
+            return fullName.Trim().Split(' ').Length == 2;
         }
 
         private bool IsValidDate(string inputDate, out DateTime birthdayDate)
@@ -207,17 +139,11 @@ namespace BirthdaysBot.BLL.Commands
             return DateTime.TryParseExact(inputDate + ".2000", "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out birthdayDate);
         }
 
-        private enum InputStage
+        private class UserBirthdayInfo
         {
-            Start,
-            RequestFullName,
-            AwaitingFullName,
-            RequestBirthday,
-            AwaitingBirthday,
-            RequestUsernameChoice,
-            RequestTelegramUsername,
-            AwaitingTelegramUsername,
-            ShowSuccessMessage
+            public string FullName { get; set; } = string.Empty;
+            public DateTime Birthday { get; set; } = DateTime.MinValue;
+            public string TelegramUsername { get; set; } = string.Empty;
         }
     }
 }
