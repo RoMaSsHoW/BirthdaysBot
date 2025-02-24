@@ -16,8 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\BirthdaysBot.BLL\BirthdaysBot.BLL.csproj" />
-    <ProjectReference Include="..\..\BirthdaysBot.DAL\BirthdaysBot.DAL.csproj" />
+    <ProjectReference Include="..\BirthdaysBot.BLL\BirthdaysBot.BLL.csproj" />
+    <ProjectReference Include="..\BirthdaysBot.DAL\BirthdaysBot.DAL.csproj" />
   </ItemGroup>
 
 </Project>

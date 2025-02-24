@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="TestData\Entities\" />
+    <Folder Include="TestData\Context\" />
+    <Folder Include="TestData\Data\" />
+  </ItemGroup>
+
+</Project>
