@@ -207,7 +207,6 @@ namespace BirthdaysBot.BLL.Commands
             return DateTime.TryParseExact(inputDate + ".2000", "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out birthdayDate);
         }
 
-
         private enum InputStage
         {
             Start,
