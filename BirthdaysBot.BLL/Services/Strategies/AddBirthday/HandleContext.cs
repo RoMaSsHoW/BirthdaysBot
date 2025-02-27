@@ -1,32 +1,67 @@
-﻿using Telegram.Bot.Types;
+﻿using BirthdaysBot.BLL.Models;
+using Telegram.Bot;
+using Telegram.Bot.Types;
 
 namespace BirthdaysBot.BLL.Services.Strategies.AddBirthday
 {
     public class HandleContext
     {
-        private IHandleStrategy? _strategy;
         private readonly Update _update;
-        private readonly long _chatId;
+        private readonly ITelegramBotClient _botClient;
+        private IHandleStrategy? _strategy;
+        private static readonly Dictionary<long, UserBirthdayInfo> _state = new();
 
-        public HandleContext(Update update, long chatId)
+        public HandleContext(ITelegramBotClient botClient, Update update)
         {
+            _botClient = botClient;
             _update = update;
-            _chatId = chatId;
         }
 
-        public void SetStrategy(IHandleStrategy strategy)
+        public async Task UseHandleAsync(long chatId)
         {
-            _strategy = strategy ?? throw new ArgumentNullException(nameof(strategy), "Strategy cannot be null.");
-        }
-
-        public async Task UseHandleAsync()
-        {
-            if (_strategy == null)
+            if (!_state.ContainsKey(chatId))
             {
-                throw new InvalidOperationException("Notification strategy must be set before sending a message.");
+                _state[chatId] = new UserBirthdayInfo();
+                await _botClient.SendMessage(chatId, "Введите ФИ (например: Иванов Иван)");
+                return;
             }
 
-            await _strategy.Handle(_update, _chatId);
+            var state = _state[chatId];
+
+            _strategy = SelectStrategy(state);
+
+            await _strategy.Handle(_botClient, _update, chatId, state);
+        }
+
+        private IHandleStrategy SelectStrategy(UserBirthdayInfo state)
+        {
+            if (string.IsNullOrEmpty(state.FullName))
+            {
+                return new FullNameHandle();
+            }
+            else if (state.Birthday == DateTime.MinValue)
+            {
+            }
+            else if (string.IsNullOrEmpty(state.TelegramUsername))
+            {
+            }
+            return new FullNameHandle();
         }
     }
 }
+
+
+
+
+
+
+
+//if (_strategy == null)
+//{
+//    throw new InvalidOperationException("Notification strategy must be set before sending a message.");
+//}
+
+//await _strategy.Handle(_update, _chatId);
+
+
+//_strategy = strategy ?? throw new ArgumentNullException(nameof(strategy), "Strategy cannot be null.");

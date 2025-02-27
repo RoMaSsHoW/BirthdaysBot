@@ -38,12 +38,12 @@ namespace BirthdaysBot.BLL.Commands
                 return;
             }
 
-            if (!_commandState.ContainsKey(chatId.Value))
-            {
-                _commandState[chatId.Value] = new UserBirthdayInfo();
-                //await _botClient.SendMessage(chatId.Value, "Введите ФИ (например: Иванов Иван)");
-                //return;
-            }
+            //if (!_commandState.ContainsKey(chatId.Value))
+            //{
+            //    //_commandState[chatId.Value] = new UserBirthdayInfo();
+            //    //await _botClient.SendMessage(chatId.Value, "Введите ФИ (например: Иванов Иван)");
+            //    //return;
+            //}
 
             //if (update.Type == UpdateType.CallbackQuery)
             //{
@@ -55,37 +55,37 @@ namespace BirthdaysBot.BLL.Commands
             //}
         }
 
-        private async Task ProcessInput(long chatId, string messageText, int userMessageId)
-        {
-            var state = _commandState[chatId];
+        //private async Task ProcessInput(long chatId, string messageText, int userMessageId)
+        //{
+        //    var state = _commandState[chatId];
 
-            await Helper.DeleteMessage(_botClient, chatId, userMessageId);
+        //    await Helper.DeleteMessage(_botClient, chatId, userMessageId);
 
-            if (string.IsNullOrEmpty(state.FullName))
-            {
-                await HandleFullNameInput(chatId, messageText);
-            }
-            else if (state.Birthday == DateTime.MinValue)
-            {
-                await HandleBirthdayInput(chatId, messageText);
-            }
-            else if (string.IsNullOrEmpty(state.TelegramUsername))
-            {
-                await HandleUsernameInput(chatId, messageText);
-            }
-        }
+        //    if (string.IsNullOrEmpty(state.FullName))
+        //    {
+        //        await HandleFullNameInput(chatId, messageText);
+        //    }
+        //    else if (state.Birthday == DateTime.MinValue)
+        //    {
+        //        await HandleBirthdayInput(chatId, messageText);
+        //    }
+        //    else if (string.IsNullOrEmpty(state.TelegramUsername))
+        //    {
+        //        await HandleUsernameInput(chatId, messageText);
+        //    }
+        //}
 
-        private async Task HandleFullNameInput(long chatId, string messageText)
-        {
-            if (string.IsNullOrWhiteSpace(messageText) || !IsValidFullName(messageText))
-            {
-                await _botClient.SendMessage(chatId, "Введите корректное ФИ (например: Иванов Иван)");
-                return;
-            }
+        //private async Task HandleFullNameInput(long chatId, string messageText)
+        //{
+        //    //if (string.IsNullOrWhiteSpace(messageText) || !IsValidFullName(messageText))
+        //    //{
+        //    //    await _botClient.SendMessage(chatId, "Введите корректное ФИ (например: Иванов Иван)");
+        //    //    return;
+        //    //}
 
-            _commandState[chatId].FullName = CapitalizeWords(messageText);
-            await _botClient.SendMessage(chatId, "Введите дату рождения в формате дд.мм:");
-        }
+        //    //_commandState[chatId].FullName = CapitalizeWords(messageText);
+        //    //await _botClient.SendMessage(chatId, "Введите дату рождения в формате дд.мм:");
+        //}
 
         private async Task HandleBirthdayInput(long chatId, string messageText)
         {
@@ -124,17 +124,17 @@ namespace BirthdaysBot.BLL.Commands
             }
         }
 
-        private string CapitalizeWords(string input)
-        {
-            return string.Join(" ", input.Split(' ')
-                .Where(w => !string.IsNullOrWhiteSpace(w))
-                .Select(w => char.ToUpper(w[0]) + w.Substring(1).ToLower()));
-        }
+        //private string CapitalizeWords(string input)
+        //{
+        //    return string.Join(" ", input.Split(' ')
+        //        .Where(w => !string.IsNullOrWhiteSpace(w))
+        //        .Select(w => char.ToUpper(w[0]) + w.Substring(1).ToLower()));
+        //}
 
-        private bool IsValidFullName(string fullName)
-        {
-            return fullName.Trim().Split(' ').Length == 2;
-        }
+        //private bool IsValidFullName(string fullName)
+        //{
+        //    return fullName.Trim().Split(' ').Length == 2;
+        //}
 
         private bool IsValidDate(string inputDate, out DateTime birthdayDate)
         {
