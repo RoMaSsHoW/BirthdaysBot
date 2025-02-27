@@ -41,11 +41,17 @@ namespace BirthdaysBot.BLL.Services.Strategies.AddBirthday
             }
             else if (state.Birthday == DateTime.MinValue)
             {
+                return new BirthdayHandle();
             }
             else if (string.IsNullOrEmpty(state.TelegramUsername))
             {
             }
             return new FullNameHandle();
+        }
+
+        private void SetStrategy(IHandleStrategy strategy)
+        {
+            _strategy = strategy ?? throw new ArgumentNullException(nameof(strategy), "Strategy cannot be null.");
         }
     }
 }
@@ -63,5 +69,3 @@ namespace BirthdaysBot.BLL.Services.Strategies.AddBirthday
 
 //await _strategy.Handle(_update, _chatId);
 
-
-//_strategy = strategy ?? throw new ArgumentNullException(nameof(strategy), "Strategy cannot be null.");

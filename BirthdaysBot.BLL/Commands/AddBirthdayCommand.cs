@@ -1,10 +1,8 @@
 ﻿using BirthdaysBot.BLL.Helpers;
 using BirthdaysBot.BLL.Models;
 using BirthdaysBot.BLL.Services;
-using System.Globalization;
 using Telegram.Bot;
 using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
 
 namespace BirthdaysBot.BLL.Commands
 {
@@ -87,17 +85,17 @@ namespace BirthdaysBot.BLL.Commands
         //    //await _botClient.SendMessage(chatId, "Введите дату рождения в формате дд.мм:");
         //}
 
-        private async Task HandleBirthdayInput(long chatId, string messageText)
-        {
-            if (!IsValidDate(messageText, out DateTime birthdayDate))
-            {
-                await _botClient.SendMessage(chatId, "Введите корректную дату в формате дд.мм:");
-                return;
-            }
+        //private async Task HandleBirthdayInput(long chatId, string messageText)
+        //{
+        //    if (!IsValidDate(messageText, out DateTime birthdayDate))
+        //    {
+        //        await _botClient.SendMessage(chatId, "Введите корректную дату в формате дд.мм:");
+        //        return;
+        //    }
 
-            _commandState[chatId].Birthday = birthdayDate;
-            await _botClient.SendMessage(chatId, "Хотите добавить Telegram Username?", replyMarkup: InlineButtons.AddOrSkipUsername);
-        }
+        //    _commandState[chatId].Birthday = birthdayDate;
+        //    await _botClient.SendMessage(chatId, "Хотите добавить Telegram Username?", replyMarkup: InlineButtons.AddOrSkipUsername);
+        //}
 
         private async Task HandleUsernameInput(long chatId, string messageText)
         {
@@ -136,9 +134,9 @@ namespace BirthdaysBot.BLL.Commands
         //    return fullName.Trim().Split(' ').Length == 2;
         //}
 
-        private bool IsValidDate(string inputDate, out DateTime birthdayDate)
-        {
-            return DateTime.TryParseExact(inputDate + ".2000", "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out birthdayDate);
-        }
+        //private bool IsValidDate(string inputDate, out DateTime birthdayDate)
+        //{
+        //    return DateTime.TryParseExact(inputDate + ".2000", "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out birthdayDate);
+        //}
     }
 }
