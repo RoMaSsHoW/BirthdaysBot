@@ -31,6 +31,16 @@ namespace BirthdaysBot.BLL.Services.Strategies.AddBirthday
             _strategy = SelectStrategy(state);
 
             await _strategy.Handle(_botClient, _update, chatId, state);
+
+            if (!string.IsNullOrEmpty(state.FullName) && state.Birthday != DateTime.MinValue && !string.IsNullOrEmpty(state.TelegramUsername))
+            {
+                await _botClient.SendMessage(chatId, $"Человек успешно добавлен!\n\n" +
+                    $"ФИ: {state.FullName}\n" +
+                    $"Дата рождения: {state.Birthday:dd.MM}\n" +
+                    $"Telegram Username: {state.TelegramUsername}");
+
+                _state.Remove(chatId);
+            }
         }
 
         private IHandleStrategy SelectStrategy(UserBirthdayInfo state)
@@ -45,8 +55,10 @@ namespace BirthdaysBot.BLL.Services.Strategies.AddBirthday
             }
             else if (string.IsNullOrEmpty(state.TelegramUsername))
             {
+                return new TelegramUsernameHandle();
             }
-            return new FullNameHandle();
+
+            throw new InvalidOperationException("Все данные уже заполнены или состояние некорректно.");
         }
 
         private void SetStrategy(IHandleStrategy strategy)
@@ -55,17 +67,3 @@ namespace BirthdaysBot.BLL.Services.Strategies.AddBirthday
         }
     }
 }
-
-
-
-
-
-
-
-//if (_strategy == null)
-//{
-//    throw new InvalidOperationException("Notification strategy must be set before sending a message.");
-//}
-
-//await _strategy.Handle(_update, _chatId);
-
