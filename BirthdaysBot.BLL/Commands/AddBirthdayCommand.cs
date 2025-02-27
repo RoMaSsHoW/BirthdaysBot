@@ -1,5 +1,5 @@
-﻿using BirthdaysBot.BLL.Buttons;
-using BirthdaysBot.BLL.Helpers;
+﻿using BirthdaysBot.BLL.Helpers;
+using BirthdaysBot.BLL.Models;
 using BirthdaysBot.BLL.Services;
 using System.Globalization;
 using Telegram.Bot;
@@ -13,7 +13,7 @@ namespace BirthdaysBot.BLL.Commands
         private readonly ITelegramBotClient _botClient;
         private readonly IUserService _userService;
 
-        private readonly Dictionary<long, UserBirthdayInfo> _commandState = new();
+        private static readonly Dictionary<long, UserBirthdayInfo> _commandState = new();
 
         public AddBirthdayCommand(ITelegramBotClient botClient, IUserService userService)
         {
@@ -41,23 +41,25 @@ namespace BirthdaysBot.BLL.Commands
             if (!_commandState.ContainsKey(chatId.Value))
             {
                 _commandState[chatId.Value] = new UserBirthdayInfo();
-                await _botClient.SendMessage(chatId.Value, "Введите ФИ (например: Иванов Иван)");
-                return;
+                //await _botClient.SendMessage(chatId.Value, "Введите ФИ (например: Иванов Иван)");
+                //return;
             }
 
-            if (update.Type == UpdateType.CallbackQuery)
-            {
-                await HandleCallbackQuery(update.CallbackQuery, chatId.Value);
-            }
-            else if (update.Type == UpdateType.Message)
-            {
-                await ProcessInput(chatId.Value, update.Message.Text);
-            }
+            //if (update.Type == UpdateType.CallbackQuery)
+            //{
+            //    await HandleCallbackQuery(update.CallbackQuery, chatId.Value);
+            //}
+            //else if (update.Type == UpdateType.Message)
+            //{
+            //    await ProcessInput(chatId.Value, update.Message.Text, update.Message.MessageId);
+            //}
         }
 
-        private async Task ProcessInput(long chatId, string messageText)
+        private async Task ProcessInput(long chatId, string messageText, int userMessageId)
         {
             var state = _commandState[chatId];
+
+            await Helper.DeleteMessage(_botClient, chatId, userMessageId);
 
             if (string.IsNullOrEmpty(state.FullName))
             {
@@ -137,13 +139,6 @@ namespace BirthdaysBot.BLL.Commands
         private bool IsValidDate(string inputDate, out DateTime birthdayDate)
         {
             return DateTime.TryParseExact(inputDate + ".2000", "dd.MM.yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out birthdayDate);
-        }
-
-        private class UserBirthdayInfo
-        {
-            public string FullName { get; set; } = string.Empty;
-            public DateTime Birthday { get; set; } = DateTime.MinValue;
-            public string TelegramUsername { get; set; } = string.Empty;
         }
     }
 }

@@ -1,9 +1,8 @@
-﻿using BirthdaysBot.BLL.Helpers;
-using Telegram.Bot.Types.ReplyMarkups;
+﻿using Telegram.Bot.Types.ReplyMarkups;
 
-namespace BirthdaysBot.BLL.Buttons
+namespace BirthdaysBot.BLL.Helpers
 {
-    public static class ReplyButtons
+    public class ReplyButtons
     {
         private static ReplyKeyboardMarkup mainKeybord = new(new[]
         {
