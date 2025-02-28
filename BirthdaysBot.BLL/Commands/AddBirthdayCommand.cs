@@ -40,15 +40,3 @@ namespace BirthdaysBot.BLL.Commands
         }
     }
 }
-
-//private async Task HandleCallbackQuery(CallbackQuery callbackQuery, long chatId)
-//{
-//    if (callbackQuery.Data == CommandNames.CallbackSkipUsernameC)
-//    {
-//        await HandleUsernameInput(chatId, null);
-//    }
-//    else
-//    {
-//        await _botClient.SendMessage(chatId, "Введите Telegram Username (например: @Oleg)");
-//    }
-//}

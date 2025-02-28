@@ -1,4 +1,6 @@
-﻿using BirthdaysBot.BLL.Models;
+﻿using BirthdaysBot.BLL.Helpers;
+using BirthdaysBot.BLL.Models;
+using Microsoft.VisualBasic;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 
@@ -10,7 +12,7 @@ namespace BirthdaysBot.BLL.Services.Strategies.AddBirthday
         {
             var messageText = update.Message?.Text;
 
-            if (string.IsNullOrWhiteSpace(messageText) || !IsValidFullName(messageText))
+            if (string.IsNullOrWhiteSpace(messageText) || !IsValidFullName(messageText) || !IsValidMessage(messageText))
             {
                 await botClient.SendMessage(chatId, "Введите корректное ФИ (например: Иванов Иван)");
                 return;
@@ -19,6 +21,15 @@ namespace BirthdaysBot.BLL.Services.Strategies.AddBirthday
             state.FullName = CapitalizeWords(messageText);
 
             await botClient.SendMessage(chatId, "Введите дату рождения в формате дд.мм:");
+        }
+
+        private bool IsValidMessage(string messageText)
+        {
+            if (messageText == CommandNames.AddBirthdayRuC || messageText == CommandNames.ShowBirthdaysRuC)
+            {
+                return false;
+            }
+            return true;
         }
 
         private bool IsValidFullName(string fullName)

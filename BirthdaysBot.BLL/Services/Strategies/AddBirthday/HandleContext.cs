@@ -1,6 +1,8 @@
-﻿using BirthdaysBot.BLL.Models;
+﻿using BirthdaysBot.BLL.Helpers;
+using BirthdaysBot.BLL.Models;
 using Telegram.Bot;
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
 
 namespace BirthdaysBot.BLL.Services.Strategies.AddBirthday
 {
@@ -19,28 +21,64 @@ namespace BirthdaysBot.BLL.Services.Strategies.AddBirthday
 
         public async Task UseHandleAsync(long chatId)
         {
+            var state = await GetOrCreateStateAsync(chatId);
+
+            if (state == null) return;
+
+            if (_update.Type == UpdateType.CallbackQuery)
+            {
+                await HandleCallbackAsync(chatId, state);
+            }
+            else if (_update.Type == UpdateType.Message)
+            {
+                await StartOrContinueHandlingAsync(chatId, state);
+            }
+
+            if (state.IsComplete)
+            {
+                await CompleteRegistrationAsync(chatId, state);
+            }
+        }
+
+        private async Task<UserBirthdayInfo> GetOrCreateStateAsync(long chatId)
+        {
             if (!_state.ContainsKey(chatId))
             {
                 _state[chatId] = new UserBirthdayInfo();
                 await _botClient.SendMessage(chatId, "Введите ФИ (например: Иванов Иван)");
-                return;
+                return null;
             }
+            return _state[chatId];
+        }
 
-            var state = _state[chatId];
+        private async Task HandleCallbackAsync(long chatId, UserBirthdayInfo state)
+        {
+            var callbackDate = _update.CallbackQuery?.Data;
 
-            _strategy = SelectStrategy(state);
-
-            await _strategy.Handle(_botClient, _update, chatId, state);
-
-            if (!string.IsNullOrEmpty(state.FullName) && state.Birthday != DateTime.MinValue && !string.IsNullOrEmpty(state.TelegramUsername))
+            if (callbackDate == CommandNames.CallbackAddUsernameC)
             {
-                await _botClient.SendMessage(chatId, $"Человек успешно добавлен!\n\n" +
+                await _botClient.SendMessage(chatId, "Введите Telegram Username (например: @Oleg)");
+            }
+            else if (callbackDate == CommandNames.CallbackSkipUsernameC)
+            {
+                await StartOrContinueHandlingAsync(chatId, state);
+            }
+        }
+
+        private async Task StartOrContinueHandlingAsync(long chatId, UserBirthdayInfo state)
+        {
+            _strategy = SelectStrategy(state);
+            await _strategy.Handle(_botClient, _update, chatId, state);
+        }
+
+        private async Task CompleteRegistrationAsync(long chatId, UserBirthdayInfo state)
+        {
+            await _botClient.SendMessage(chatId, $"Человек успешно добавлен!\n\n" +
                     $"ФИ: {state.FullName}\n" +
                     $"Дата рождения: {state.Birthday:dd.MM}\n" +
                     $"Telegram Username: {state.TelegramUsername}");
 
-                _state.Remove(chatId);
-            }
+            _state.Remove(chatId);
         }
 
         private IHandleStrategy SelectStrategy(UserBirthdayInfo state)
@@ -57,13 +95,10 @@ namespace BirthdaysBot.BLL.Services.Strategies.AddBirthday
             {
                 return new TelegramUsernameHandle();
             }
-
-            throw new InvalidOperationException("Все данные уже заполнены или состояние некорректно.");
-        }
-
-        private void SetStrategy(IHandleStrategy strategy)
-        {
-            _strategy = strategy ?? throw new ArgumentNullException(nameof(strategy), "Strategy cannot be null.");
+            else
+            {
+                throw new InvalidOperationException("Все данные уже заполнены или состояние некорректно.");
+            }
         }
     }
 }
