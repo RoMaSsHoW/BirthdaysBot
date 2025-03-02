@@ -1,8 +1,4 @@
-﻿using BirthdaysBot.BLL.Commands;
-using BirthdaysBot.BLL.Helpers;
-using Telegram.Bot.Types;
-
-namespace BirthdaysBot.BLL.Services
+﻿namespace BirthdaysBot.BLL.Services
 {
     public class UpdateHandler : IUpdateHandler
     {

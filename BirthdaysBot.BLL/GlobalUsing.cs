@@ -1,0 +1,10 @@
+﻿global using System.Globalization;
+global using BirthdaysBot.BLL.Helpers;
+global using BirthdaysBot.BLL.Services;
+global using BirthdaysBot.BLL.Services.Strategies.AddBirthday;
+global using BirthdaysBot.BLL.Models;
+global using BirthdaysBot.BLL.Commands;
+global using Telegram.Bot;
+global using Telegram.Bot.Types;
+global using Telegram.Bot.Types.Enums;
+global using Telegram.Bot.Types.ReplyMarkups;

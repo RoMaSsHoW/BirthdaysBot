@@ -1,6 +1,4 @@
-﻿using Telegram.Bot.Types.ReplyMarkups;
-
-namespace BirthdaysBot.BLL.Helpers
+﻿namespace BirthdaysBot.BLL.Helpers
 {
     public class ReplyButtons
     {

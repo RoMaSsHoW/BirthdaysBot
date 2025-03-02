@@ -1,10 +1,4 @@
-﻿using BirthdaysBot.BLL.Helpers;
-using BirthdaysBot.BLL.Models;
-using System.Globalization;
-using Telegram.Bot;
-using Telegram.Bot.Types;
-
-namespace BirthdaysBot.BLL.Services.Strategies.AddBirthday
+﻿namespace BirthdaysBot.BLL.Services.Strategies.AddBirthday
 {
     internal class BirthdayHandle : IHandleStrategy
     {

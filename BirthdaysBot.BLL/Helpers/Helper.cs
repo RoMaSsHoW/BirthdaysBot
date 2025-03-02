@@ -1,6 +1,4 @@
-﻿using Telegram.Bot;
-
-namespace BirthdaysBot.BLL.Helpers
+﻿namespace BirthdaysBot.BLL.Helpers
 {
     public class Helper
     {

@@ -1,8 +1,4 @@
-﻿using BirthdaysBot.BLL.Models;
-using Telegram.Bot.Types;
-using Telegram.Bot.Types.Enums;
-
-namespace BirthdaysBot.BLL.Services
+﻿namespace BirthdaysBot.BLL.Services
 {
     public class UserService : IUserService
     {
@@ -46,7 +42,7 @@ namespace BirthdaysBot.BLL.Services
                 };
             }
 
-            if (newUser != null && newUser.ChatId == admin.ChatId )
+            if (newUser != null && newUser.ChatId == admin.ChatId)
             {
                 return admin;
             }

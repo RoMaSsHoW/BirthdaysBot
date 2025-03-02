@@ -1,6 +1,4 @@
-﻿using Telegram.Bot.Types;
-
-namespace BirthdaysBot.BLL.Services
+﻿namespace BirthdaysBot.BLL.Services
 {
     public interface IUpdateHandler
     {

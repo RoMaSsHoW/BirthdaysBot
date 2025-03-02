@@ -1,9 +1,4 @@
-﻿using BirthdaysBot.BLL.Helpers;
-using BirthdaysBot.BLL.Services;
-using Telegram.Bot;
-using Telegram.Bot.Types;
-
-namespace BirthdaysBot.BLL.Commands
+﻿namespace BirthdaysBot.BLL.Commands
 {
     public class StartCommand : BaseCommand
     {

@@ -1,6 +1,4 @@
-﻿using Telegram.Bot.Types;
-
-namespace BirthdaysBot.BLL.Commands
+﻿namespace BirthdaysBot.BLL.Commands
 {
     public abstract class BaseCommand
     {
