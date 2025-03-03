@@ -15,6 +15,7 @@ builder.Services.AddSingleton<IUpdateHandler, UpdateHandler>();
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<BaseCommand, StartCommand>();
 builder.Services.AddSingleton<BaseCommand, AddBirthdayCommand>();
+builder.Services.AddSingleton<BaseCommand, ShowBirthdaysCommand>();
 builder.Services.AddSingleton<StateMachine>();
 
 

@@ -1,4 +1,6 @@
-﻿namespace BirthdaysBot.BLL.Commands
+﻿using System.Text;
+
+namespace BirthdaysBot.BLL.Commands
 {
     public class ShowBirthdaysCommand : BaseCommand
     {
@@ -27,6 +29,28 @@
                 await _botClient.SendMessage(chatId.Value, Messages.BadUser);
                 return;
             }
+
+            // Получаем список дней рождения (пока используем тестовые данные)
+            var birthdays = new TestData().TestBirthdays; // Заменить на _birthdayService.GetBirthdays(user.Id);
+
+            if (!birthdays.Any())
+            {
+                await _botClient.SendMessage(chatId.Value, "Список дней рождения пуст.");
+                return;
+            }
+
+            // Формируем сообщение
+            var messageText = new StringBuilder();
+            foreach (var birthday in birthdays)
+            {
+                messageText.AppendLine($"{birthday.BirthdayId} {birthday.BirthdayName}");
+                messageText.AppendLine($" Дата: {birthday.BirthdayDate:dd.MM.yyyy}");
+                messageText.AppendLine($" TelegramUsername: {birthday.BirthdayTelegramUsername ?? "-"}");
+                messageText.AppendLine();
+            }
+
+            // Отправляем сообщение
+            await _botClient.SendMessage(chatId.Value, messageText.ToString().Trim());
         }
     }
 }

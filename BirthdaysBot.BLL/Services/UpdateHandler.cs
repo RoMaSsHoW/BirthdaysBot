@@ -40,6 +40,13 @@
                 return;
             }
 
+            if (message != null && message.Text!.Contains(CommandNames.ShowBirthdaysRuC))
+            {
+                await ExecuteCommand(CommandNames.ShowBirthdaysRuC, update);
+                _stateMachine.SetUserState(chatId, UserState.GettingBirthday);
+                return;
+            }
+
             if (message != null || callbackQuery != null)
             {
                 switch (userState)
