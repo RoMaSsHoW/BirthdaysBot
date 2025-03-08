@@ -81,7 +81,7 @@
             {
                 return new FullNameHandle();
             }
-            else if (state.Birthday == DateTime.MinValue)
+            else if (state.Birthday == DateOnly.MinValue)
             {
                 return new BirthdayHandle();
             }
