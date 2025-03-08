@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace BirthdaysBot.DAL.Entities;
+﻿namespace BirthdaysBot.DAL.Entities;
 
 public partial class Birthday
 {

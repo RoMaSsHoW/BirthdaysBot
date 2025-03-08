@@ -1,14 +1,21 @@
 using BirthdaysBot.BLL.Commands;
 using BirthdaysBot.BLL.Services;
+using BirthdaysBot.DAL.Data;
+using Microsoft.EntityFrameworkCore;
 using Telegram.Bot;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var configuration = builder.Configuration;
 var botToken = configuration["TelegramSettings:BotToken"];
-var webhookUrl = configuration["TelegramSettings:WebhookUrl"];
 
 builder.Services.AddSingleton<ITelegramBotClient>(new TelegramBotClient(botToken));
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgeDbConnection"));
+});
+
 builder.Services.ConfigureTelegramBotMvc();
 
 builder.Services.AddSingleton<IUpdateHandler, UpdateHandler>();
