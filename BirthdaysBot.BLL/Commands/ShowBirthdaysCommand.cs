@@ -1,16 +1,16 @@
-﻿using System.Text;
-
-namespace BirthdaysBot.BLL.Commands
+﻿namespace BirthdaysBot.BLL.Commands
 {
     public class ShowBirthdaysCommand : BaseCommand
     {
         private readonly ITelegramBotClient _botClient;
         private readonly IUserService _userService;
+        private readonly IBirthdayRepository _birthdayRepository;
 
-        public ShowBirthdaysCommand(ITelegramBotClient botClient, IUserService userService)
+        public ShowBirthdaysCommand(ITelegramBotClient botClient, IUserService userService, IBirthdayRepository birthdayRepository)
         {
             _botClient = botClient;
             _userService = userService;
+            _birthdayRepository = birthdayRepository;
         }
 
         public override string CommandName => CommandNames.ShowBirthdaysRuC;
@@ -31,7 +31,7 @@ namespace BirthdaysBot.BLL.Commands
             }
 
             // Получаем список дней рождения (пока используем тестовые данные)
-            var birthdays = new TestData().TestBirthdays; // Заменить на _birthdayService.GetBirthdays(user.Id);
+            var birthdays = await _birthdayRepository.GetBirthdaysAsync(chatId.Value);
 
             if (!birthdays.Any())
             {
@@ -44,7 +44,7 @@ namespace BirthdaysBot.BLL.Commands
             foreach (var birthday in birthdays)
             {
                 messageText.AppendLine($"{birthday.BirthdayId} {birthday.BirthdayName}");
-                messageText.AppendLine($" Дата: {birthday.BirthdayDate:dd.MM.yyyy}");
+                messageText.AppendLine($" Дата: {birthday.BirthdayDate:dd.MM}");
                 messageText.AppendLine($" TelegramUsername: {birthday.BirthdayTelegramUsername ?? "-"}");
                 messageText.AppendLine();
             }
