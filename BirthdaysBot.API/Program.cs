@@ -1,5 +1,6 @@
 using BirthdaysBot.BLL.Commands;
 using BirthdaysBot.BLL.Helpers;
+using BirthdaysBot.BLL.Repositories;
 using BirthdaysBot.BLL.Services;
 using BirthdaysBot.DAL.Data;
 using Microsoft.EntityFrameworkCore;
@@ -19,6 +20,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.ConfigureTelegramBotMvc();
 
+builder.Services.AddSingleton<IBirthdayRepository, BirthdayRepository>();
 builder.Services.AddSingleton<IUpdateHandler, UpdateHandler>();
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<BaseCommand, StartCommand>();
