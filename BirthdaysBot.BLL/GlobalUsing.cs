@@ -11,3 +11,4 @@ global using Telegram.Bot.Types.Enums;
 global using Telegram.Bot.Types.ReplyMarkups;
 global using BirthdaysBot.DAL.Data;
 global using Microsoft.EntityFrameworkCore;
+global using BirthdaysBot.BLL.Repositories;

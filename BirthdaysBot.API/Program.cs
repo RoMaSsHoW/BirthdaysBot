@@ -20,11 +20,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.ConfigureTelegramBotMvc();
 
-builder.Services.AddSingleton<IBirthdayRepository, BirthdayRepository>();
-builder.Services.AddSingleton<IUpdateHandler, UpdateHandler>();
+builder.Services.AddScoped<IBirthdayRepository, BirthdayRepository>();
+builder.Services.AddScoped<IUpdateHandler, UpdateHandler>();
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<BaseCommand, StartCommand>();
-builder.Services.AddSingleton<BaseCommand, AddBirthdayCommand>();
+builder.Services.AddScoped<BaseCommand, AddBirthdayCommand>();
 builder.Services.AddSingleton<BaseCommand, ShowBirthdaysCommand>();
 builder.Services.AddSingleton<StateMachine>();
 

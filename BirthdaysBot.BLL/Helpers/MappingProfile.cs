@@ -16,6 +16,10 @@
                 .ForMember(dest => dest.BirthdayName, opt => opt.MapFrom(src => src.BirthdayName))
                 .ForMember(dest => dest.BirthdayDate, opt => opt.MapFrom(src => src.BirthdayDate))
                 .ForMember(dest => dest.BirthdayTelegramUsername, opt => opt.MapFrom(src => src.BirthdayTelegramUsername));
+            CreateMap<UserBirthdayInfo, Birthday>()
+                .ForMember(dest => dest.BirthdayName, opt => opt.MapFrom(src => src.FullName))
+                .ForMember(dest => dest.BirthdayDate, opt => opt.MapFrom(src => src.Birthday))
+                .ForMember(dest => dest.BirthdayTelegramUsername, opt => opt.MapFrom(src => src.TelegramUsername));
         }
     }
 }

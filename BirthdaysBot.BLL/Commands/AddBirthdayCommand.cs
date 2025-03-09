@@ -4,11 +4,13 @@
     {
         private readonly ITelegramBotClient _botClient;
         private readonly IUserService _userService;
+        private readonly IBirthdayRepository _birthdayRepository;
 
-        public AddBirthdayCommand(ITelegramBotClient botClient, IUserService userService)
+        public AddBirthdayCommand(ITelegramBotClient botClient, IUserService userService, IBirthdayRepository birthdayRepository)
         {
             _botClient = botClient;
             _userService = userService;
+            _birthdayRepository = birthdayRepository;
         }
 
         public override string CommandName => CommandNames.AddBirthdayRuC;
@@ -28,7 +30,7 @@
                 return;
             }
 
-            var handleContext = new HandleContext(_botClient, update);
+            var handleContext = new HandleContext(_botClient, update, _birthdayRepository);
 
             await handleContext.UseHandleAsync(chatId.Value);
         }

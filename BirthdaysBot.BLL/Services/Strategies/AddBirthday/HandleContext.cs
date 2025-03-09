@@ -4,13 +4,15 @@
     {
         private readonly Update _update;
         private readonly ITelegramBotClient _botClient;
+        private readonly IBirthdayRepository _birthdayRepository;
         private IHandleStrategy? _strategy;
         private static readonly Dictionary<long, UserBirthdayInfo> _state = new();
 
-        public HandleContext(ITelegramBotClient botClient, Update update)
+        public HandleContext(ITelegramBotClient botClient, Update update, IBirthdayRepository birthdayRepository)
         {
             _botClient = botClient;
             _update = update;
+            _birthdayRepository = birthdayRepository;
         }
 
         public async Task UseHandleAsync(long chatId)
@@ -67,10 +69,16 @@
 
         private async Task CompleteRegistrationAsync(long chatId, UserBirthdayInfo state)
         {
-            await _botClient.SendMessage(chatId, $"Человек успешно добавлен!\n\n" +
-                    $"ФИ: {state.FullName}\n" +
-                    $"Дата рождения: {state.Birthday:dd.MM}\n" +
-                    $"Telegram Username: {state.TelegramUsername}");
+            var result = await _birthdayRepository.CreateBirthdayAsync(state, chatId);
+
+            if (result == true)
+            {
+                await _botClient.SendMessage(chatId, $"Человек успешно добавлен!");
+            }
+            else
+            {
+                await _botClient.SendMessage(chatId, Messages.ErrorMessage);
+            }
 
             _state.Remove(chatId);
         }
