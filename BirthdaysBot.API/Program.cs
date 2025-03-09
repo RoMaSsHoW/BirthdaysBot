@@ -1,4 +1,5 @@
 using BirthdaysBot.BLL.Commands;
+using BirthdaysBot.BLL.Helpers;
 using BirthdaysBot.BLL.Services;
 using BirthdaysBot.DAL.Data;
 using Microsoft.EntityFrameworkCore;
@@ -25,6 +26,7 @@ builder.Services.AddSingleton<BaseCommand, AddBirthdayCommand>();
 builder.Services.AddSingleton<BaseCommand, ShowBirthdaysCommand>();
 builder.Services.AddSingleton<StateMachine>();
 
+builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 
 builder.Services.AddCors(opt =>
 {

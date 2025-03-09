@@ -8,3 +8,5 @@ global using Telegram.Bot;
 global using Telegram.Bot.Types;
 global using Telegram.Bot.Types.Enums;
 global using Telegram.Bot.Types.ReplyMarkups;
+global using AutoMapper;
+global using BirthdaysBot.DAL.Entities;
