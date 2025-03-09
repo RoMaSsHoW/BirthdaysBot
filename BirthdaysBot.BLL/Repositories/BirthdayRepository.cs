@@ -31,11 +31,24 @@
 
             query = query.Where(v => v.BirthdayDate == birthdayInfo.Birthday);
 
+            query = query.Where(v => v.UserChatId == chatId);
+
             var birthdays = await query.ToListAsync();
 
             if (birthdays.Count > 0) return true;
 
             return false;
+        }
+
+        public async Task<IEnumerable<BirthdayDTO>> GetBirthdaysAsync(long chatId)
+        {
+            var query = _dbContext.Birthdays.AsQueryable();
+
+            query = query.Where(v => v.UserChatId == chatId);
+
+            var birthdays = await query.ToListAsync();
+
+            return _mapper.Map<IEnumerable<BirthdayDTO>>(birthdays);
         }
     }
 }
