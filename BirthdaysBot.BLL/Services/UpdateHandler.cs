@@ -15,36 +15,44 @@
 
         public async Task Execute(Update update)
         {
+            // Получаем данные из обновления
             var message = update.Message;
             var callbackQuery = update.CallbackQuery;
-            var chatId = message?.Chat?.Id ?? callbackQuery!.Message!.Chat.Id;
 
-            var userState = _stateMachine.GetUserState(chatId);
-
+            // Проверяем, что обновление содержит данные
             if (message?.Chat == null && callbackQuery == null)
             {
                 return;
             }
 
-            if (message != null && message.Text!.Contains(CommandNames.StartEnC))
-            {
-                await ExecuteCommand(CommandNames.StartEnC, update);
-                _stateMachine.SetUserState(chatId, UserState.MainMenu);
-                return;
-            }
+            var chatId = message?.Chat?.Id ?? callbackQuery!.Message!.Chat.Id;
+            var userState = _stateMachine.GetUserState(chatId);
 
-            if (message != null && message.Text!.Contains(CommandNames.AddBirthdayRuC))
+            // Обработка команд
+            if (message?.Text != null)
             {
-                await ExecuteCommand(CommandNames.AddBirthdayRuC, update);
-                _stateMachine.SetUserState(chatId, UserState.AddingBirthday);
-                return;
-            }
+                // Обработка команды /start
+                if (message.Text.Contains(CommandNames.StartEnC))
+                {
+                    await ExecuteCommand(CommandNames.StartEnC, update);
+                    return;
+                }
 
-            if (message != null && message.Text!.Contains(CommandNames.ShowBirthdaysRuC))
-            {
-                await ExecuteCommand(CommandNames.ShowBirthdaysRuC, update);
-                _stateMachine.SetUserState(chatId, UserState.GettingBirthday);
-                return;
+                // Обработка команды "Добавить др"
+                if (message.Text.Contains(CommandNames.AddBirthdayRuC))
+                {
+                    await ExecuteCommand(CommandNames.AddBirthdayRuC, update);
+                    _stateMachine.SetUserState(chatId, UserState.AddingBirthday);
+                    return;
+                }
+
+                // Обработка команды "Показать др"
+                if (message.Text.Contains(CommandNames.ShowBirthdaysRuC))
+                {
+                    await ExecuteCommand(CommandNames.ShowBirthdaysRuC, update);
+                    _stateMachine.SetUserState(chatId, UserState.GettingBirthday);
+                    return;
+                }
             }
 
             if (message != null || callbackQuery != null)
@@ -62,7 +70,10 @@
         private async Task ExecuteCommand(string commandName, Update update)
         {
             var command = _commands.FirstOrDefault(c => c.CommandName == commandName);
-            await command.ExecuteAsync(update);
+            if (command != null)
+            {
+                await command.ExecuteAsync(update);
+            }
         }
     }
 }
