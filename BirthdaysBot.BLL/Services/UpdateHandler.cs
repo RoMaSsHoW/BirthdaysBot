@@ -70,6 +70,9 @@
                     case UserState.AddingBirthday:
                         await ExecuteCommand(CommandNames.AddBirthdayRuC, update);
                         break;
+                    case UserState.DeletingBirthday:
+                        await ExecuteCommand(CommandNames.DeleteBirthdayRuC, update);
+                        break;
                 }
 
             }

@@ -30,26 +30,18 @@
                 return;
             }
 
-            var birthdays = await _birthdayRepository.GetBirthdaysAsync(chatId.Value);
+            var context = new DeleteContext(_botClient, update, _birthdayRepository);
 
-            if (!birthdays.Any())
+            if (update.Type == UpdateType.Message)
             {
-                await _botClient.SendMessage(chatId.Value, "Список дней рождения пуст.");
-                return;
+                context.SetStrategy(new ShowBirthdaysListStrategy());
+            }
+            else if (update.Type == UpdateType.CallbackQuery)
+            {
+                context.SetStrategy(new DeleteBirthdayStrategy());
             }
 
-            var buttons = birthdays
-                .Select(birthday => new[]
-                {
-                    InlineKeyboardButton.WithCallbackData(
-                        $"{birthday.BirthdayName} {birthday.BirthdayDate:dd.MM}",
-                        $"{birthday.BirthdayId}")
-                })
-                .ToArray();
-
-            InlineKeyboardMarkup birthdayForDelete = new(buttons);
-
-            await _botClient.SendMessage(chatId.Value, "Выберите дату которую хотите удалить:", replyMarkup: birthdayForDelete);
+            await context.ExecuteStrategyAsync(chatId.Value);
         }
     }
 }
