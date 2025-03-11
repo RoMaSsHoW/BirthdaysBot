@@ -26,6 +26,7 @@ builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<BaseCommand, StartCommand>();
 builder.Services.AddScoped<BaseCommand, AddBirthdayCommand>();
 builder.Services.AddScoped<BaseCommand, ShowBirthdaysCommand>();
+builder.Services.AddScoped<BaseCommand, DeleteBirthdayCommand>();
 builder.Services.AddSingleton<StateMachine>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);

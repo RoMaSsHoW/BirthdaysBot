@@ -53,6 +53,14 @@
                     _stateMachine.SetUserState(chatId, UserState.GettingBirthday);
                     return;
                 }
+
+                // Обработка команды "Удалить др"
+                if (message.Text.Contains(CommandNames.DeleteBirthdayRuC))
+                {
+                    await ExecuteCommand(CommandNames.DeleteBirthdayRuC, update);
+                    _stateMachine.SetUserState(chatId, UserState.DeletingBirthday);
+                    return;
+                }
             }
 
             if (message != null || callbackQuery != null)
