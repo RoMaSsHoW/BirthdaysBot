@@ -43,9 +43,9 @@
             var messageText = new StringBuilder();
             foreach (var birthday in birthdays)
             {
-                messageText.AppendLine($"{birthday.BirthdayId} {birthday.BirthdayName}");
-                messageText.AppendLine($" Дата: {birthday.BirthdayDate:dd.MM}");
-                messageText.AppendLine($" TelegramUsername: {birthday.BirthdayTelegramUsername ?? "-"}");
+                messageText.AppendLine($"*{birthday.BirthdayName}");
+                messageText.AppendLine($"  Дата: {birthday.BirthdayDate:dd.MM}");
+                messageText.AppendLine($"  TelegramUsername: {birthday.BirthdayTelegramUsername ?? "-"}");
                 messageText.AppendLine();
             }
 
