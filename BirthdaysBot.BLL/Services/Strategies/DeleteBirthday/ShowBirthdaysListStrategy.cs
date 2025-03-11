@@ -17,7 +17,7 @@
                 {
                     InlineKeyboardButton.WithCallbackData(
                         $"{birthday.BirthdayName} {birthday.BirthdayDate:dd.MM}",
-                        $"{birthday.BirthdayId}")
+                        $"delete_{birthday.BirthdayId}")
                 })
                 .ToArray();
 
