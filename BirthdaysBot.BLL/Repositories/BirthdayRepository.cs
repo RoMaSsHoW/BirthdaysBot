@@ -50,5 +50,29 @@
 
             return _mapper.Map<IEnumerable<BirthdayDTO>>(birthdays);
         }
+
+        public async Task<bool> DeleteBirthdayAsync(int birthdayId, long chatId)
+        {
+            var birthday = await _dbContext.Birthdays
+                .Where(v => v.BirthdayId == birthdayId)
+                .Where(v => v.UserChatId == chatId)
+                .ToListAsync();
+
+            if (birthday.Any())
+            {
+                _dbContext.Birthdays.RemoveRange(birthday);
+
+                await _dbContext.SaveChangesAsync();
+            }
+
+            var birthdays = await _dbContext.Birthdays
+                .Where(v => v.BirthdayId == birthdayId)
+                .Where(v => v.UserChatId == chatId)
+                .ToListAsync();
+
+            if (birthdays.Count == 0) return true;
+
+            return false;
+        }
     }
 }
