@@ -5,8 +5,8 @@
         private static ReplyKeyboardMarkup mainKeybord = new(new[]
         {
             //new KeyboardButton[] { CommandNames.MyGroupsRuC },
-            new KeyboardButton[] { CommandNames.AddBirthdayRuC, CommandNames.ShowBirthdaysRuC}
-            //new KeyboardButton[] { "Настройки" }
+            new KeyboardButton[] { CommandNames.AddBirthdayRuC, CommandNames.ShowBirthdaysRuC},
+            new KeyboardButton[] { CommandNames.DeleteBirthdayRuC }
         })
         {
             ResizeKeyboard = true // Клавиатура будет адаптирована под экран
