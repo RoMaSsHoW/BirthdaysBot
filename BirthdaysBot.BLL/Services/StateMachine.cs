@@ -25,7 +25,7 @@
         MainMenu,
         GettingBirthday,
         AddingBirthday,
-        EditingBirthday,
+        UpdatingBirthday,
         DeletingBirthday
     }
 }

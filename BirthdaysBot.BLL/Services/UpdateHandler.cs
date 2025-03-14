@@ -61,6 +61,14 @@
                     _stateMachine.SetUserState(chatId, UserState.DeletingBirthday);
                     return;
                 }
+
+                // Обработка команды "Редактировать др"
+                if (message.Text.Contains(CommandNames.UpdateBirthdayRuC))
+                {
+                    await ExecuteCommand(CommandNames.UpdateBirthdayRuC, update);
+                    _stateMachine.SetUserState(chatId, UserState.UpdatingBirthday);
+                    return;
+                }
             }
 
             if (message != null || callbackQuery != null)
@@ -72,6 +80,9 @@
                         break;
                     case UserState.DeletingBirthday:
                         await ExecuteCommand(CommandNames.DeleteBirthdayRuC, update);
+                        break;
+                    case UserState.UpdatingBirthday:
+                        await ExecuteCommand(CommandNames.UpdateBirthdayRuC, update);
                         break;
                 }
 

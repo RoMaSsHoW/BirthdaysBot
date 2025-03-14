@@ -14,6 +14,7 @@
         public const string ShowBirthdaysRuC = "Показать др";
         public const string AddBirthdayRuC = "Добавить др";
         public const string DeleteBirthdayRuC = "Удалить др";
+        public const string UpdateBirthdayRuC = "Редактировать др";
 
         public const string MyGroupsRuC = "Мои группы";
         public const string AddGroupRuC = "Добавить группу";
