@@ -30,7 +30,49 @@
                 return;
             }
 
-            await _botClient.SendMessage(chatId.Value, "Команда работает");
+            var messageText = update.Message?.Text;
+            var callbackData = update.CallbackQuery?.Data;
+
+            if (update.Type == UpdateType.Message)
+            {
+                if (messageText.Contains(CommandNames.UpdateBirthdayRuC))
+                {
+                    await ShowBirthdays(chatId.Value);
+                }
+            }
+            else if (update.Type == UpdateType.CallbackQuery)
+            {
+
+            }
+        }
+
+        private async Task ShowBirthdays(long chatId)
+        {
+            var birthdays = await _birthdayRepository.GetBirthdaysAsync(chatId);
+
+            if (!birthdays.Any())
+            {
+                await _botClient.SendMessage(chatId, "Список дней рождения пуст.");
+                return;
+            }
+
+            var buttons = birthdays
+                .Select(birthday => new[]
+                {
+                    InlineKeyboardButton.WithCallbackData(
+                        $"{birthday.BirthdayName} {birthday.BirthdayDate:dd.MM}",
+                        $"update_{birthday.BirthdayId}")
+                })
+                .ToArray();
+
+            InlineKeyboardMarkup birthdayForDelete = new(buttons);
+
+            await _botClient.SendMessage(chatId, "Выберите дату которую хотите удалить:", replyMarkup: birthdayForDelete);
+        }
+
+        private async Task SelectFieldForUpdating(long chatId)
+        {
+
         }
     }
 }
