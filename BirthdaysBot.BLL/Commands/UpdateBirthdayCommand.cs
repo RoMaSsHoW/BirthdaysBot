@@ -70,9 +70,9 @@
             await _botClient.SendMessage(chatId, "Выберите дату которую хотите удалить:", replyMarkup: birthdayForDelete);
         }
 
-        private async Task SelectFieldForUpdating(long chatId)
+        private async Task SelectFieldForUpdating(Update update, long chatId)
         {
-
+            var callbackData = update.CallbackQuery?.Data;
         }
     }
 }

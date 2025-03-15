@@ -73,20 +73,21 @@
 
             if (message != null || callbackQuery != null)
             {
-                switch (userState)
-                {
-                    case UserState.AddingBirthday:
-                        await ExecuteCommand(CommandNames.AddBirthdayRuC, update);
-                        break;
-                    case UserState.DeletingBirthday:
-                        await ExecuteCommand(CommandNames.DeleteBirthdayRuC, update);
-                        break;
-                    case UserState.UpdatingBirthday:
-                        await ExecuteCommand(CommandNames.UpdateBirthdayRuC, update);
-                        break;
-                }
+                string commandName = GetCommandName(userState);
 
+                await ExecuteCommand(commandName, update);
             }
+        }
+
+        private string GetCommandName(UserState userState)
+        {
+            return userState switch
+            {
+                UserState.AddingBirthday => CommandNames.AddBirthdayRuC,
+                UserState.DeletingBirthday => CommandNames.DeleteBirthdayRuC,
+                UserState.UpdatingBirthday => CommandNames.UpdateBirthdayRuC,
+                _ => throw new ArgumentException("Invalid user state")
+            };
         }
 
         private async Task ExecuteCommand(string commandName, Update update)
