@@ -4,6 +4,8 @@
     {
         Task<IEnumerable<BirthdayDTO>> GetBirthdaysAsync(long chatId);
 
+        Task<IEnumerable<BirthdayDTO>> GetAllBirthdaysAsync();
+
         Task<BirthdayDTO> GetBirthdayAsync(int birthdayId, long chatId);
 
         Task<bool> CreateBirthdayAsync(UserBirthdayInfo birthdayInfo, long chatId);

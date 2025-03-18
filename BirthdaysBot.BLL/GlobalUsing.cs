@@ -14,3 +14,4 @@ global using Microsoft.EntityFrameworkCore;
 global using BirthdaysBot.BLL.Repositories;
 global using System.Text;
 global using BirthdaysBot.BLL.Services.Strategies.DeleteBirthday;
+global using Quartz;

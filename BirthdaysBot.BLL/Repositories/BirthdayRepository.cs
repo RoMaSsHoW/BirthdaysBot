@@ -22,6 +22,13 @@
             return _mapper.Map<IEnumerable<BirthdayDTO>>(birthdays);
         }
 
+        public async Task<IEnumerable<BirthdayDTO>> GetAllBirthdaysAsync()
+        {
+            var birthdays = await _dbContext.Birthdays.ToListAsync();
+
+            return _mapper.Map<IEnumerable<BirthdayDTO>>(birthdays);
+        }
+
         public async Task<BirthdayDTO> GetBirthdayAsync(int birthdayId, long chatId)
         {
             var birthday = await _dbContext.Birthdays
