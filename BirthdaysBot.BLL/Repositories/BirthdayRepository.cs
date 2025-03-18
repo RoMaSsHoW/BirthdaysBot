@@ -25,9 +25,7 @@
         public async Task<BirthdayDTO> GetBirthdayAsync(int birthdayId, long chatId)
         {
             var birthday = await _dbContext.Birthdays
-                .Where(v => v.BirthdayId == birthdayId)
-                .Where(v => v.UserChatId == chatId)
-                .ToListAsync();
+                .FirstOrDefaultAsync(v => v.BirthdayId == birthdayId && v.UserChatId == chatId);
 
             return _mapper.Map<BirthdayDTO>(birthday);
         }
