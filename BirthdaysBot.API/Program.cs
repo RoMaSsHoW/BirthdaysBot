@@ -4,6 +4,7 @@ using BirthdaysBot.BLL.Repositories;
 using BirthdaysBot.BLL.Services;
 using BirthdaysBot.DAL.Data;
 using Microsoft.EntityFrameworkCore;
+using Quartz;
 using Telegram.Bot;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,6 +32,20 @@ builder.Services.AddScoped<BaseCommand, UpdateBirthdayCommand>();
 builder.Services.AddSingleton<StateMachine>();
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
+
+builder.Services.AddQuartz(q =>
+{
+    var jobKey = new JobKey("BirthdayReminderJob");
+
+    q.AddJob<BirthdayReminderJob>(opts => opts.WithIdentity(jobKey));
+
+    q.AddTrigger(opts => opts
+        .ForJob(jobKey)
+        .WithIdentity("BirthdayReminderTrigger")
+        .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(9, 0))); // Запуск в 9:00
+});
+
+builder.Services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
 
 builder.Services.AddCors(opt =>
 {

@@ -17,6 +17,8 @@
 
             query = query.Where(v => v.UserChatId == chatId);
 
+            query = query.OrderBy(v => v.BirthdayDate);
+
             var birthdays = await query.ToListAsync();
 
             return _mapper.Map<IEnumerable<BirthdayDTO>>(birthdays);
@@ -24,7 +26,9 @@
 
         public async Task<IEnumerable<BirthdayDTO>> GetAllBirthdaysAsync()
         {
-            var birthdays = await _dbContext.Birthdays.ToListAsync();
+            var birthdays = await _dbContext.Birthdays
+                .OrderBy(b => b.BirthdayDate)
+                .ToListAsync();
 
             return _mapper.Map<IEnumerable<BirthdayDTO>>(birthdays);
         }

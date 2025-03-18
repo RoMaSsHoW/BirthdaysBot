@@ -18,8 +18,8 @@
 
             var messages = birthdays
                 .Where(b => b.BirthdayDate.HasValue &&
-                            b.BirthdayDate.Value >= today &&
-                            b.BirthdayDate.Value <= today.AddDays(4))
+                            new DateOnly(today.Year, b.BirthdayDate.Value.Month, b.BirthdayDate.Value.Day) >= today &&
+                            new DateOnly(today.Year, b.BirthdayDate.Value.Month, b.BirthdayDate.Value.Day) <= today.AddDays(4))
                 .Select(b => new Tuple<long?, string>(b.UserChatId, GetBirthdayMessage(b, today)))
                 .Where(tuple => !string.IsNullOrEmpty(tuple.Item2))
                 .ToList();
@@ -40,7 +40,9 @@
         {
             if (!birthday.BirthdayDate.HasValue) return string.Empty;
 
-            int daysLeft = (birthday.BirthdayDate.Value.DayNumber - today.DayNumber);
+            var birthdayWithCorrectYear = new DateOnly(today.Year, birthday.BirthdayDate.Value.Month, birthday.BirthdayDate.Value.Day);
+
+            int daysLeft = (birthdayWithCorrectYear.DayNumber - today.DayNumber);
 
             var telegramUsername = birthday.BirthdayTelegramUsername == "-" ? string.Empty : birthday.BirthdayTelegramUsername;
 
