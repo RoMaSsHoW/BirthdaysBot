@@ -20,7 +20,7 @@
             var callbackQuery = update.CallbackQuery;
 
             // Проверяем, что обновление содержит данные
-            if (message?.Chat == null && callbackQuery == null)
+            if (message == null && callbackQuery == null)
             {
                 return;
             }
@@ -63,19 +63,22 @@
                 }
 
                 // Обработка команды "Редактировать др"
-                if (message.Text.Contains(CommandNames.UpdateBirthdayRuC))
-                {
-                    await ExecuteCommand(CommandNames.UpdateBirthdayRuC, update);
-                    _stateMachine.SetUserState(chatId, UserState.UpdatingBirthday);
-                    return;
-                }
+                //if (message.Text.Contains(CommandNames.UpdateBirthdayRuC))
+                //{
+                //    await ExecuteCommand(CommandNames.UpdateBirthdayRuC, update);
+                //    _stateMachine.SetUserState(chatId, UserState.UpdatingBirthday);
+                //    return;
+                //}
             }
 
             if (message != null || callbackQuery != null)
             {
-                string commandName = GetCommandName(userState);
+                if (userState != UserState.MainMenu)
+                {
+                    string commandName = GetCommandName(userState);
 
-                await ExecuteCommand(commandName, update);
+                    await ExecuteCommand(commandName, update);
+                }
             }
         }
 
@@ -85,7 +88,7 @@
             {
                 UserState.AddingBirthday => CommandNames.AddBirthdayRuC,
                 UserState.DeletingBirthday => CommandNames.DeleteBirthdayRuC,
-                UserState.UpdatingBirthday => CommandNames.UpdateBirthdayRuC,
+                //UserState.UpdatingBirthday => CommandNames.UpdateBirthdayRuC,
                 _ => throw new ArgumentException("Invalid user state")
             };
         }
