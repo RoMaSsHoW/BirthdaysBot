@@ -16,6 +16,8 @@ public partial class AppDbContext : DbContext
 
     public virtual DbSet<Birthday> Birthdays { get; set; }
 
+    public virtual DbSet<User> Users { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Birthday>(entity =>
@@ -31,6 +33,19 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.BirthdayName).HasColumnName("birthday_name");
             entity.Property(e => e.BirthdayTelegramUsername).HasColumnName("birthday_telegram_username");
             entity.Property(e => e.UserChatId).HasColumnName("user_chat_id");
+        });
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasKey(e => e.UserId).HasName("users_pk");
+
+            entity.ToTable("users");
+
+            entity.Property(e => e.UserId)
+                .UseIdentityAlwaysColumn()
+                .HasColumnName("user_id");
+            entity.Property(e => e.UserChatId).HasColumnName("user_chat_id");
+            entity.Property(e => e.UserName).HasColumnName("user_name");
         });
 
         OnModelCreatingPartial(modelBuilder);
