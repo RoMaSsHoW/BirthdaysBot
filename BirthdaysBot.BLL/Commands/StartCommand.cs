@@ -15,19 +15,32 @@
 
         public override async Task ExecuteAsync(Update update)
         {
-            var user = _userService.GetUser(update);
-            var message = update.Message;
-            var chatId = message.Chat.Id;
-            if (user != null)
+            var chatId = update.Message?.Chat.Id ?? update.CallbackQuery?.Message?.Chat.Id;
+            if (chatId == null)
             {
-                if (message != null)
-                {
-                    await _botClient.SendMessage(chatId, $"Привет {message.Chat.FirstName}.\nДобро пожаловать в бота!", replyMarkup: ReplyButtons.MainKeybord);
-                }
+                return;
             }
-            else
+
+            var user = _userService.GetUser(update);
+            if (user == null)
             {
-                await _botClient.SendMessage(chatId, Messages.BadUser);
+                await _botClient.SendMessage(chatId.Value, Messages.BadUser);
+                return;
+            }
+
+            var mainKeybord = new ReplyKeyboardMarkup(new[]
+            {
+                new KeyboardButton[] { CommandNames.AddBirthdayRuC, CommandNames.ShowBirthdaysRuC},
+                new KeyboardButton[] { CommandNames.DeleteBirthdayRuC/*, CommandNames.UpdateBirthdayRuC*/ }
+            })
+            {
+                ResizeKeyboard = true // Клавиатура будет адаптирована под экран
+            };
+
+            var message = update.Message;
+            if (message != null)
+            {
+                await _botClient.SendMessage(chatId.Value, $"Привет {message.Chat.FirstName}.\nДобро пожаловать в бота!", replyMarkup: mainKeybord);
             }
         }
     }
