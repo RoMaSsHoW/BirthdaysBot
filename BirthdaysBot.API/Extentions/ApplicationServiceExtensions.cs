@@ -68,9 +68,9 @@
         private static void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IBirthdayRepository, BirthdayRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUpdateHandler, UpdateHandler>();
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<BaseCommand, StartCommand>();
+            services.AddScoped<BaseCommand, StartCommand>();
             services.AddScoped<BaseCommand, AddBirthdayCommand>();
             services.AddScoped<BaseCommand, ShowBirthdaysCommand>();
             services.AddScoped<BaseCommand, DeleteBirthdayCommand>();

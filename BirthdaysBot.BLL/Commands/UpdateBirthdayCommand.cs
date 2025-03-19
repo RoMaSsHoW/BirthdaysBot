@@ -3,13 +3,13 @@
     public class UpdateBirthdayCommand : BaseCommand
     {
         private readonly ITelegramBotClient _botClient;
-        private readonly IUserService _userService;
+        private readonly IUserRepository _userRepository;
         private readonly IBirthdayRepository _birthdayRepository;
 
-        public UpdateBirthdayCommand(ITelegramBotClient botClient, IUserService userService, IBirthdayRepository birthdayRepository)
+        public UpdateBirthdayCommand(ITelegramBotClient botClient, IUserRepository userRepository, IBirthdayRepository birthdayRepository)
         {
             _botClient = botClient;
-            _userService = userService;
+            _userRepository = userRepository;
             _birthdayRepository = birthdayRepository;
         }
 
@@ -23,8 +23,8 @@
                 return;
             }
 
-            var user = _userService.GetUser(update);
-            if (user == null)
+            var user = await _userRepository.UserExistsAsync(chatId.Value);
+            if (!user)
             {
                 await _botClient.SendMessage(chatId.Value, Messages.BadUser);
                 return;

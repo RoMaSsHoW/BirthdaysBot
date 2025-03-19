@@ -3,12 +3,10 @@
     public class UpdateHandler : IUpdateHandler
     {
         private readonly List<BaseCommand> _commands;
-        private readonly IUserService _userService;
 
-        public UpdateHandler(IEnumerable<BaseCommand> commands, IUserService userService)
+        public UpdateHandler(IEnumerable<BaseCommand> commands)
         {
             _commands = commands.ToList();
-            _userService = userService;
         }
 
         public async Task Execute(Update update)
