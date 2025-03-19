@@ -3,13 +3,11 @@
     public class UpdateHandler : IUpdateHandler
     {
         private readonly List<BaseCommand> _commands;
-        private readonly StateMachine _stateMachine;
         private readonly IUserService _userService;
 
-        public UpdateHandler(IEnumerable<BaseCommand> commands, StateMachine stateMachine, IUserService userService)
+        public UpdateHandler(IEnumerable<BaseCommand> commands, IUserService userService)
         {
             _commands = commands.ToList();
-            _stateMachine = stateMachine;
             _userService = userService;
         }
 
@@ -26,7 +24,7 @@
             }
 
             var chatId = message?.Chat?.Id ?? callbackQuery!.Message!.Chat.Id;
-            var userState = _stateMachine.GetUserState(chatId);
+            var userState = StateMachine.GetUserState(chatId);
 
             // Обработка команд
             if (message?.Text != null)
@@ -42,7 +40,7 @@
                 if (message.Text.Contains(CommandNames.AddBirthdayRuC))
                 {
                     await ExecuteCommand(CommandNames.AddBirthdayRuC, update);
-                    _stateMachine.SetUserState(chatId, UserState.AddingBirthday);
+                    StateMachine.SetUserState(chatId, UserState.AddingBirthday);
                     return;
                 }
 
@@ -50,7 +48,7 @@
                 if (message.Text.Contains(CommandNames.ShowBirthdaysRuC))
                 {
                     await ExecuteCommand(CommandNames.ShowBirthdaysRuC, update);
-                    _stateMachine.SetUserState(chatId, UserState.GettingBirthday);
+                    StateMachine.SetUserState(chatId, UserState.GettingBirthday);
                     return;
                 }
 
@@ -58,7 +56,7 @@
                 if (message.Text.Contains(CommandNames.DeleteBirthdayRuC))
                 {
                     await ExecuteCommand(CommandNames.DeleteBirthdayRuC, update);
-                    _stateMachine.SetUserState(chatId, UserState.DeletingBirthday);
+                    StateMachine.SetUserState(chatId, UserState.DeletingBirthday);
                     return;
                 }
 

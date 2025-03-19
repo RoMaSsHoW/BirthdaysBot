@@ -9,6 +9,7 @@
             if (callbackData == null)
             {
                 await botClient.SendMessage(chatId, Messages.ErrorMessage);
+                StateMachine.ResetUserState(chatId);
                 return;
             }
 
@@ -28,6 +29,7 @@
                 else
                 {
                     await botClient.SendMessage(chatId, Messages.ErrorMessage);
+                    StateMachine.ResetUserState(chatId);
                 }
             }
             else if (callbackData.StartsWith("confirm_delete_"))
@@ -39,21 +41,25 @@
                     if (result)
                     {
                         await botClient.SendMessage(chatId, "✅ День рождения успешно удален!");
+                        StateMachine.ResetUserState(chatId);
                     }
                     else
                     {
                         await botClient.SendMessage(chatId, Messages.ErrorMessage);
+                        StateMachine.ResetUserState(chatId);
                     }
                 }
                 else
                 {
                     await botClient.SendMessage(chatId, Messages.ErrorMessage);
+                    StateMachine.ResetUserState(chatId);
                 }
             }
             else if (callbackData == "cancel_delete")
             {
                 // Если пользователь отменил удаление
                 await botClient.SendMessage(chatId, "Удаление отменено.");
+                StateMachine.ResetUserState(chatId);
             }
         }
     }

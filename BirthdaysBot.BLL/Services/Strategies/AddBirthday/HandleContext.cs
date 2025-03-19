@@ -81,6 +81,7 @@
             }
 
             _state.Remove(chatId);
+            StateMachine.ResetUserState(chatId);
         }
 
         private IHandleStrategy SelectStrategy(UserBirthdayInfo state)

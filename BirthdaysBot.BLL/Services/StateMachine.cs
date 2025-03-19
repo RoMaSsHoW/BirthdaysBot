@@ -2,21 +2,21 @@
 {
     public class StateMachine
     {
-        private readonly Dictionary<long, UserState> _userStates = new();
+        private static readonly Dictionary<long, UserState> _userStates = new();
 
-        public UserState GetUserState(long chatId)
+        public static UserState GetUserState(long chatId)
         {
             return _userStates.ContainsKey(chatId) ? _userStates[chatId] : UserState.MainMenu;
         }
 
-        public void SetUserState(long chatId, UserState state)
+        public static void SetUserState(long chatId, UserState state)
         {
             _userStates[chatId] = state;
         }
 
-        public void ResetUserState(long chatId)
+        public static void ResetUserState(long chatId)
         {
-            _userStates.Remove(chatId);
+            _userStates[chatId] = UserState.MainMenu;
         }
     }
 

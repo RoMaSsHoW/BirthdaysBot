@@ -51,6 +51,8 @@
 
             // Отправляем сообщение
             await _botClient.SendMessage(chatId.Value, messageText.ToString().Trim());
+
+            StateMachine.ResetUserState(chatId.Value);
         }
     }
 }

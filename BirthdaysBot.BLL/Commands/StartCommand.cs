@@ -22,7 +22,7 @@
             {
                 if (message != null)
                 {
-                    await _botClient.SendMessage(chatId, $"Привет {message.Chat.Username}.\nДобро пожаловать в бота!\nВаш chatId - {chatId}", replyMarkup: ReplyButtons.MainKeybord);
+                    await _botClient.SendMessage(chatId, $"Привет {message.Chat.FirstName}.\nДобро пожаловать в бота!", replyMarkup: ReplyButtons.MainKeybord);
                 }
             }
             else
