@@ -14,7 +14,13 @@
 
             state.Birthday = birthdayDate;
 
-            await botClient.SendMessage(chatId, "Хотите добавить Telegram Username?", replyMarkup: InlineButtons.AddOrSkipUsername);
+            var buttons = new InlineKeyboardMarkup(new[]
+            {
+                InlineKeyboardButton.WithCallbackData("✅ Да", $"{CommandNames.CallbackAddUsernameC}"),
+                InlineKeyboardButton.WithCallbackData("❌ Нет", $"{CommandNames.CallbackSkipUsernameC}")
+            });
+
+            await botClient.SendMessage(chatId, "Хотите добавить Telegram Username?", replyMarkup: buttons);
         }
 
         private bool IsValidDate(string? inputDate, out DateOnly birthdayDate)

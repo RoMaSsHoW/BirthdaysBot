@@ -2,10 +2,9 @@
 {
     public class HandleContext
     {
-        private readonly Update _update;
         private readonly ITelegramBotClient _botClient;
+        private readonly Update _update;
         private readonly IBirthdayRepository _birthdayRepository;
-        private IHandleStrategy? _strategy;
         private static readonly Dictionary<long, UserBirthdayInfo> _state = new();
 
         public HandleContext(ITelegramBotClient botClient, Update update, IBirthdayRepository birthdayRepository)
@@ -49,13 +48,13 @@
 
         private async Task HandleCallbackAsync(long chatId, UserBirthdayInfo state)
         {
-            var callbackDate = _update.CallbackQuery?.Data;
+            var callbackData = _update.CallbackQuery?.Data;
 
-            if (callbackDate == CommandNames.CallbackAddUsernameC)
+            if (callbackData == CommandNames.CallbackAddUsernameC)
             {
                 await _botClient.SendMessage(chatId, "Введите Telegram Username (например: @Oleg)");
             }
-            else if (callbackDate == CommandNames.CallbackSkipUsernameC)
+            else if (callbackData == CommandNames.CallbackSkipUsernameC)
             {
                 await StartOrContinueHandlingAsync(chatId, state);
             }
@@ -63,22 +62,20 @@
 
         private async Task StartOrContinueHandlingAsync(long chatId, UserBirthdayInfo state)
         {
-            _strategy = SelectStrategy(state);
-            await _strategy.Handle(_botClient, _update, chatId, state);
+            var strategy = SelectStrategy(state);
+            if (strategy != null)
+            {
+                await strategy.Handle(_botClient, _update, chatId, state);
+            }
         }
 
         private async Task CompleteRegistrationAsync(long chatId, UserBirthdayInfo state)
         {
             var result = await _birthdayRepository.CreateBirthdayAsync(state, chatId);
 
-            if (result == true)
-            {
-                await _botClient.SendMessage(chatId, $"Человек успешно добавлен!");
-            }
-            else
-            {
-                await _botClient.SendMessage(chatId, Messages.ErrorMessage);
-            }
+            var message = result ? $"✅ Человек успешно добавлен!" : Messages.ErrorMessage;
+
+            await _botClient.SendMessage(chatId, message);
 
             _state.Remove(chatId);
             StateMachine.ResetUserState(chatId);
