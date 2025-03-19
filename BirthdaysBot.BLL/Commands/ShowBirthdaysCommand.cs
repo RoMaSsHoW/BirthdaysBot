@@ -18,28 +18,23 @@
         public override async Task ExecuteAsync(Update update)
         {
             var chatId = update.Message?.Chat.Id ?? update.CallbackQuery?.Message?.Chat.Id;
-            if (chatId == null)
-            {
-                return;
-            }
+            if (chatId == null) return;
 
             var user = _userService.GetUser(update);
             if (user == null)
             {
                 await _botClient.SendMessage(chatId.Value, Messages.BadUser);
+                StateMachine.ResetUserState(chatId.Value);
                 return;
             }
 
-            // Получаем список дней рождения (пока используем тестовые данные)
             var birthdays = await _birthdayRepository.GetBirthdaysAsync(chatId.Value);
-
             if (!birthdays.Any())
             {
                 await _botClient.SendMessage(chatId.Value, "Список дней рождения пуст.");
                 return;
             }
 
-            // Формируем сообщение
             var messageText = new StringBuilder();
             foreach (var birthday in birthdays)
             {
@@ -49,9 +44,7 @@
                 messageText.AppendLine();
             }
 
-            // Отправляем сообщение
             await _botClient.SendMessage(chatId.Value, messageText.ToString().Trim());
-
             StateMachine.ResetUserState(chatId.Value);
         }
     }

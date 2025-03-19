@@ -18,15 +18,13 @@
         public override async Task ExecuteAsync(Update update)
         {
             var chatId = update.Message?.Chat.Id ?? update.CallbackQuery?.Message?.Chat.Id;
-            if (chatId == null)
-            {
-                return;
-            }
+            if (chatId == null) return;
 
             var user = _userService.GetUser(update);
             if (user == null)
             {
                 await _botClient.SendMessage(chatId.Value, Messages.BadUser);
+                StateMachine.ResetUserState(chatId.Value);
                 return;
             }
 
