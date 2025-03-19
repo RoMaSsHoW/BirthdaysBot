@@ -5,62 +5,63 @@
         public async Task ExecuteAsync(ITelegramBotClient botClient, Update update, IBirthdayRepository birthdayRepository, long chatId)
         {
             var callbackData = update.CallbackQuery?.Data;
-            
-            if (callbackData == null)
+
+            if (string.IsNullOrEmpty(callbackData))
             {
-                await botClient.SendMessage(chatId, Messages.ErrorMessage);
-                StateMachine.ResetUserState(chatId);
+                await SendMessageAndResetState(botClient, chatId, Messages.ErrorMessage);
                 return;
             }
 
             if (callbackData.StartsWith("delete_"))
             {
-                // Если выбрана дата, спрашиваем подтверждение
-                if (int.TryParse(callbackData.Replace("delete_", ""), out int birthdayId))
+                await HandleDeleteRequest(botClient, chatId, callbackData);
+            }
+            else if (callbackData.StartsWith("confirm_delete_"))
+            {
+
+            }
+            else if (callbackData == "cancel_delete")
+            {
+                await SendMessageAndResetState(botClient, chatId, "Удаление отменено.");
+            }
+        }
+
+        private async Task HandleDeleteRequest(ITelegramBotClient botClient, long chatId, string callbackData)
+        {
+            if (int.TryParse(callbackData.Replace("delete_", ""), out int birthdayId))
+            {
+                var buttons = new InlineKeyboardMarkup(new[]
                 {
-                    var buttons = new InlineKeyboardMarkup(new[]
-                    {
                     InlineKeyboardButton.WithCallbackData("✅ Да", $"confirm_delete_{birthdayId}"),
                     InlineKeyboardButton.WithCallbackData("❌ Нет", "cancel_delete")
                 });
 
-                    await botClient.SendMessage(chatId, "Вы уверены, что хотите удалить этот день рождения?", replyMarkup: buttons);
-                }
-                else
-                {
-                    await botClient.SendMessage(chatId, Messages.ErrorMessage);
-                    StateMachine.ResetUserState(chatId);
-                }
+                await botClient.SendMessage(chatId, "Вы уверены, что хотите удалить этот день рождения?", replyMarkup: buttons);
             }
-            else if (callbackData.StartsWith("confirm_delete_"))
+            else
             {
-                // Если пришло подтверждение удаления
-                if (int.TryParse(callbackData.Replace("confirm_delete_", ""), out int birthdayId))
-                {
-                    var result = await birthdayRepository.DeleteBirthdayAsync(birthdayId, chatId);
-                    if (result)
-                    {
-                        await botClient.SendMessage(chatId, "✅ День рождения успешно удален!");
-                        StateMachine.ResetUserState(chatId);
-                    }
-                    else
-                    {
-                        await botClient.SendMessage(chatId, Messages.ErrorMessage);
-                        StateMachine.ResetUserState(chatId);
-                    }
-                }
-                else
-                {
-                    await botClient.SendMessage(chatId, Messages.ErrorMessage);
-                    StateMachine.ResetUserState(chatId);
-                }
+                await SendMessageAndResetState(botClient, chatId, Messages.ErrorMessage);
             }
-            else if (callbackData == "cancel_delete")
+        }
+
+        private async Task HandleDeleteConfirm(ITelegramBotClient botClient, IBirthdayRepository birthdayRepository, long chatId, string callbackData)
+        {
+            if (int.TryParse(callbackData.Replace("confirm_delete_", ""), out int birthdayId))
             {
-                // Если пользователь отменил удаление
-                await botClient.SendMessage(chatId, "Удаление отменено.");
-                StateMachine.ResetUserState(chatId);
+                var result = await birthdayRepository.DeleteBirthdayAsync(birthdayId, chatId);
+                var message = result ? $"✅ День рождения успешно удален!" : Messages.ErrorMessage;
+                await SendMessageAndResetState(botClient, chatId, message);
             }
+            else
+            {
+                await SendMessageAndResetState(botClient, chatId, Messages.ErrorMessage);
+            }
+        }
+
+        private async Task SendMessageAndResetState(ITelegramBotClient botClient, long chatId, string message)
+        {
+            await botClient.SendMessage(chatId, message);
+            StateMachine.ResetUserState(chatId);
         }
     }
 }
