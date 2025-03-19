@@ -18,7 +18,7 @@
             }
             else if (callbackData.StartsWith("confirm_delete_"))
             {
-
+                await HandleDeleteConfirm(botClient, birthdayRepository, chatId, callbackData);
             }
             else if (callbackData == "cancel_delete")
             {

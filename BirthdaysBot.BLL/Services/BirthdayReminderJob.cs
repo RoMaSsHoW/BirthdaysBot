@@ -48,9 +48,9 @@
 
             return daysLeft switch
             {
-                4 => $"Через 4 дня у {birthday.BirthdayName} будет день рождения",
-                3 => $"Через 3 дня у {birthday.BirthdayName} будет день рождения",
-                2 => $"Через 2 дня у {birthday.BirthdayName} будет день рождения",
+                4 => $"Через 3 дня у {birthday.BirthdayName} будет день рождения",
+                3 => $"Через 2 дня у {birthday.BirthdayName} будет день рождения",
+                2 => $"После завтра у {birthday.BirthdayName} будет день рождения",
                 1 => $"Завтра у {birthday.BirthdayName} будет день рождения",
                 0 => $"Сегодня у {birthday.BirthdayName} день рождения {telegramUsername}",
                 _ => string.Empty
