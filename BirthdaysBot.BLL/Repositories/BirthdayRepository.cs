@@ -13,13 +13,10 @@
 
         public async Task<IEnumerable<BirthdayDTO>> GetBirthdaysAsync(long chatId)
         {
-            var query = _dbContext.Birthdays.AsQueryable();
-
-            query = query.Where(v => v.UserChatId == chatId);
-
-            query = query.OrderBy(v => v.BirthdayDate);
-
-            var birthdays = await query.ToListAsync();
+            var birthdays = await _dbContext.Birthdays
+                .Where(v => v.UserChatId == chatId)
+                .OrderBy(v => v.BirthdayDate)
+                .ToListAsync();
 
             return _mapper.Map<IEnumerable<BirthdayDTO>>(birthdays);
         }
@@ -55,15 +52,11 @@
 
             await _dbContext.SaveChangesAsync();
 
-            var query = _dbContext.Birthdays.AsQueryable();
-
-            query = query.Where(v => v.BirthdayName == birthdayInfo.FullName);
-
-            query = query.Where(v => v.BirthdayDate == birthdayInfo.Birthday);
-
-            query = query.Where(v => v.UserChatId == chatId);
-
-            var birthdays = await query.ToListAsync();
+            var birthdays = await _dbContext.Birthdays
+                .Where(v => v.BirthdayName == birthdayInfo.FullName)
+                .Where(v => v.BirthdayDate == birthdayInfo.Birthday)
+                .Where(v => v.UserChatId == chatId)
+                .ToListAsync();
 
             if (birthdays.Count > 0) return true;
 
