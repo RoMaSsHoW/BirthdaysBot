@@ -59,8 +59,9 @@
                 q.AddTrigger(opts => opts
                     .ForJob(jobKey)
                     .WithIdentity("BirthdayReminderTrigger")
-                    .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(9, 0))); // Запуск в 9:00
-            });
+                    .WithSchedule(CronScheduleBuilder.DailyAtHourAndMinute(9, 0)
+                        .InTimeZone(TimeZoneInfo.FindSystemTimeZoneById("Asia/Tashkent")))); // Запуск в 9:00 по Ташкенту
+        });
 
             services.AddQuartzHostedService(q => q.WaitForJobsToComplete = true);
         }
